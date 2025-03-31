@@ -1,0 +1,132 @@
+-- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
+-- Configuration documentation can be found with `:h astrocore`
+-- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
+--       as this provides autocomplete and documentation while editing
+
+---@type LazySpec
+return {
+  "AstroNvim/astrocore",
+  ---@type AstroCoreOpts
+  opts = {
+    -- Configure core features of AstroNvim
+    features = {
+      large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
+      autopairs = true, -- enable autopairs at start
+      cmp = true, -- enable completion at start
+      diagnostics = { virtual_text = true, virtual_lines = false }, -- diagnostic settings on startup
+      highlighturl = true, -- highlight URLs at start
+      notifications = true, -- enable notifications at start
+    },
+    -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
+    diagnostics = {
+      virtual_text = true,
+      underline = true,
+    },
+    autocmds = {
+      restore_session = {
+        {
+          event = "VimEnter",
+          desc = "Restore previous directory session if neovim opened with no arguments",
+          nested = true, -- trigger other autocommands as buffers open
+          callback = function()
+            -- Only load the session if nvim was started with no args
+            if vim.fn.argc(-1) == 0 then
+              -- try to load a directory session using the current working directory
+              require("resession").load(vim.fn.getcwd(), { dir = "dirsession", silence_errors = true })
+            end
+          end,
+        },
+      },
+    },
+    -- passed to `vim.filetype.add`
+    -- vim options can be configured here
+    options = {
+      opt = { -- vim.opt.<key>
+        relativenumber = true, -- sets vim.opt.relativenumber
+        number = true, -- sets vim.opt.number
+        spell = false, -- sets vim.opt.spell
+        signcolumn = "yes", -- sets vim.opt.signcolumn to yes
+        wrap = false, -- sets vim.opt.wrap
+      },
+      g = { -- vim.g.<key>
+        -- configure global vim variables (vim.g)
+        -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
+        -- This can be found in the `lua/lazy_setup.lua` file
+      },
+    },
+    -- Mappings can be configured through AstroCore as well.
+    -- NOTE: keycodes follow the casing in the vimdocs. For example, `<Leader>` must be capitalized
+    mappings = {
+      -- first key is the mode
+      n = {
+        ["<Leader>O"] = { desc = "Obsidian" },
+        -- second key is the lefthand side of the map
+
+        -- navigate buffer tabs
+        ["gra"] = false,
+        ["grn"] = false,
+        ["grr"] = false,
+        ["gri"] = false,
+        ["gO"] = false,
+
+        ["<Leader>a"] = { function() vim.lsp.buf.hover() end, desc = "Hover" },
+        ["<Leader>Al"] = { ":AstroReload<cr>", desc = "Astro Reload" },
+        ["<Leader>w"] = { function() vim.lsp.buf.code_action() end, desc = "Code action" },
+        ["<Leader>]"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
+        ["<Leader>["] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
+        ["gbc"] = false,
+        ["gb"] = { "<C-o>", desc = "Go back" },
+        ["gf"] = { "<C-i>", desc = "Go forward" },
+        ["gr"] = { function() vim.lsp.buf.references() end, desc = "Go to references" },
+        ["gs"] = { function() vim.lsp.buf.document_symbol() end, desc = "Go to symbols" },
+
+        -- mappings seen under group name "buffer"
+        ["<leader>bd"] = {
+          function()
+            require("astroui.status.heirline").buffer_picker(
+              function(bufnr) require("astrocore.buffer").close(bufnr) end
+            )
+          end,
+          desc = "close buffer from tabline",
+        },
+        ["<leader>c"] = {
+          function()
+            local bufs = vim.fn.getbufinfo { buflisted = 1 }
+            require("astrocore.buffer").close(0)
+            if not bufs[2] then require("snacks").dashboard() end
+          end,
+          desc = "Close buffer",
+        },
+
+        -- tables with just a `desc` key will be registered with which-key if it's installed
+        -- this is useful for naming menus
+        -- ["<Leader>b"] = { desc = "Buffers" },
+
+        -- setting a mapping to false will disable it
+        -- ["<C-S>"] = false,
+      },
+    },
+    rooter = {
+      -- list of detectors in order of prevalence, elements can be:
+      --   "lsp" : lsp detection
+      --   string[] : a list of directory patterns to look for
+      --   fun(bufnr: integer): string|string[] : a function that takes a buffer number and outputs detected roots
+      detector = {
+        "lsp", -- highest priority is getting workspace from running language servers
+        { ".git", "_darcs", ".hg", ".bzr", ".svn" }, -- next check for a version controlled parent directory
+        { "lua", "MakeFile", "package.json", ".venv", "pyproject.toml", "go.sum" }, -- lastly check for known project root files
+      },
+      -- ignore things from root detection
+      ignore = {
+        servers = {}, -- list of language server names to ignore (Ex. { "efm" })
+        dirs = {}, -- list of directory patterns (Ex. { "~/.cargo/*" })
+      },
+      -- automatically update working directory (update manually with `:AstroRoot`)
+      autochdir = true,
+      -- scope of working directory to change ("global"|"tab"|"win")
+      scope = "global",
+      -- show notification on every working directory change
+      notify = true,
+    },
+  },
+}
