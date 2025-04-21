@@ -1,9 +1,7 @@
 return {
   "epwalsh/obsidian.nvim",
   lazy = true,
-  event = { "BufReadPre /Volumes/LIVISU/livs/markdown/obsidian-parent/eden/**.md" },
-  -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand':
-  -- event = { "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md" },
+  ft = "markdown",
   keys = {
     {
       "<leader>Ob",
@@ -36,7 +34,7 @@ return {
       desc = "Search Notes in your vault",
     },
     {
-      "<leader>Oq",
+      "<leader>Of",
       "<cmd>:ObsidianQuickSwitch<cr>",
       desc = "Quick Switch to another Note in your vault",
     },
@@ -72,16 +70,18 @@ return {
     "nvim-telescope/telescope.nvim",
   },
   opts = {
-    dir = "~/Documents/The Brain/", -- no need to call 'vim.fn.expand' here
+    dir = "~/Documents/MORSE/", -- no need to call 'vim.fn.expand' here
 
     daily_notes = {
       -- Optional, if you keep daily notes in a separate directory.
       folder = "Dailies/",
       -- Optional, if you want to change the date format for daily notes.
-      date_format = "%d-%m-%Y",
+      date_format = "%Y-%m-%d",
+      template = "daily.md",
     },
     completion = {
       nvim_cmp = true, -- if using nvim-cmp, otherwise set to false
+      blink = false,
     },
 
     -- Optional, set to true if you don't want Obsidian to manage frontmatter.
@@ -100,14 +100,38 @@ return {
       end
       return out
     end,
+    mappings = {
+      -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+      ["gf"] = {
+        action = function() return require("obsidian").util.gf_passthrough() end,
+        opts = { noremap = false, expr = true, buffer = true },
+      },
+      -- Toggle check-boxes.
+      ["<leader>ch"] = {
+        action = function() return require("obsidian").util.toggle_checkbox() end,
+        opts = { buffer = true },
+      },
+      -- Smart action depending on context, either follow link or toggle checkbox.
+      ["<cr>"] = {
+        action = function() return require("obsidian").util.smart_action() end,
+        opts = { buffer = true, expr = true },
+      },
+    },
 
     -- Optional, for templates (see below).
     templates = {
-      subdir = "home/templates",
-      date_format = "%d-%m-%Y",
+      subdir = "Templates",
+      date_format = "%Y-%m-%d",
       time_format = "%H:%M",
     },
-
+    ---@param title string|?
+    ---@return string
+    note_id_func = function(title)
+      -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+      -- In this case a note with the title 'My new note' will be given an ID that looks
+      -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
+      return title:gsub(" ", "-"):gsub("[^A-Za-z0-9-_]", "")
+    end,
     -- Optional, by default when you use `:ObsidianFollowLink` on a link to an external
     -- URL it will be ignored but you can customize this behavior here.
     follow_url_func = function(url)

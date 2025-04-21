@@ -21,10 +21,9 @@ return {
       format_on_save = {
         enabled = true, -- enable or disable format on save globally
         allow_filetypes = { -- enable format on save for specified filetypes only
-          -- "go",
-        },
-        ignore_filetypes = { -- disable format on save for specified filetypes
+          "go",
           "python",
+          "lua",
         },
       },
       disabled = { -- disable formatting capabilities for the listed language servers
@@ -85,7 +84,6 @@ return {
           desc = "Declaration of current symbol",
           cond = "textDocument/declaration",
         },
-
         ["<Leader>uY"] = {
           function() require("astrolsp.toggles").buffer_semantic_tokens() end,
           desc = "Toggle LSP semantic highlight (buffer)",

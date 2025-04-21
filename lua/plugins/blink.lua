@@ -9,5 +9,9 @@ return { -- override blink.cmp plugin
         buffer = { score_offset = -3 },
       },
     },
+    enabled = function() return not vim.tbl_contains({ "markdown" }, vim.bo.filetype) end,
+    keymap = {
+      ["<Tab>"] = {},
+    },
   },
 }
