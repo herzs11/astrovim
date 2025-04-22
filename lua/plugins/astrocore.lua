@@ -73,6 +73,7 @@ return {
         ["gO"] = false,
 
         ["<Leader>a"] = { function() vim.lsp.buf.hover() end, desc = "Hover" },
+        ["<Leader>D"] = { ":DBUIToggle<cr>", desc = "Database Console" },
         ["<Leader>Al"] = { ":AstroReload<cr>", desc = "Astro Reload" },
         ["<Leader>w"] = { function() vim.lsp.buf.code_action() end, desc = "Code action" },
         ["<Leader>]"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },

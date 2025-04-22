@@ -19,4 +19,7 @@ return {
   { import = "astrocommunity.editing-support.undotree" },
   { import = "astrocommunity.pack.go" },
   { import = "astrocommunity.pack.terraform" },
+  { import = "astrocommunity.pack.docker" },
+  { import = "astrocommunity.pack.rust" },
+  { import = "astrocommunity.pack.zig" },
 }
