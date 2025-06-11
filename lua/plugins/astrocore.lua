@@ -8,7 +8,13 @@ return {
   "AstroNvim/astrocore",
   ---@type AstroCoreOpts
   opts = {
-    -- Configure core features of AstroNvim
+    filetypes = {
+      filename = {
+        ["docker-compose.yaml"] = "yaml.docker-compose",
+        ["docker-compose*.yml"] = "yaml.docker-compose",
+      },
+    },
+    -- Configure core features of AstroNviml
     features = {
       large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
       autopairs = true, -- enable autopairs at start
@@ -43,7 +49,7 @@ return {
     -- vim options can be configured here
     options = {
       opt = { -- vim.opt.<key>
-        relativenumber = true, -- sets vim.opt.relativenumber
+        relativenumber = false, -- sets vim.opt.relativenumber
         number = true, -- sets vim.opt.number
         spell = false, -- sets vim.opt.spell
         signcolumn = "yes", -- sets vim.opt.signcolumn to yes
@@ -71,6 +77,12 @@ return {
         ["grr"] = false,
         ["gri"] = false,
         ["gO"] = false,
+
+        ["<Leader>W"] = { desc = "Window Management" },
+        ["<Leader>WM"] = { ":WindowsMaximize<cr>", desc = "Maximize" },
+        ["<Leader>WE"] = { ":WindowsEqualize<cr>", desc = "Equalize" },
+        ["<Leader>WH"] = { ":WindowsMaximizeHorizontally<cr>", desc = "Maximize Horizontally" },
+        ["<Leader>WV"] = { ":WindowsMaximizeVertically<cr>", desc = "Maximize Vertically" },
 
         ["<Leader>a"] = { function() vim.lsp.buf.hover() end, desc = "Hover" },
         ["<Leader>D"] = { ":DBUIToggle<cr>", desc = "Database Console" },
@@ -118,6 +130,7 @@ return {
         -- setting a mapping to false will disable it
         -- ["<C-S>"] = false,
         ["<Leader>uz"] = { ":ZenMode<cr>", desc = "Toggle zen mode" },
+        ["gh"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" },
       },
       v = {
 

@@ -6,7 +6,7 @@ return {
       "AstroNvim/astrocore",
       opts = function(_, opts)
         local maps = opts.mappings
-        local prefix = "<Leader>m"
+        local prefix = "<Leader>M"
         maps.n[prefix] = { desc = require("astroui").get_icon("Neogen", 1, true) .. "Annotation" }
         maps.n[prefix .. "<CR>"] = { function() require("neogen").generate { type = "any" } end, desc = "Current" }
         maps.n[prefix .. "c"] = { function() require("neogen").generate { type = "class" } end, desc = "Class" }

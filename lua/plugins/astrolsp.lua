@@ -11,7 +11,7 @@ return {
     -- Configuration table of features provided by AstroLSP
     features = {
       codelens = true, -- enable/disable codelens refresh on start
-      inlay_hints = true, -- enable/disable inlay hints on start
+      inlay_hints = false, -- enable/disable inlay hints on start
       signature_help = true,
       semantic_tokens = true, -- enable/disable semantic token highlighting
     },
@@ -24,6 +24,9 @@ return {
           "go",
           "python",
           "lua",
+          "typescript",
+          "typescriptreact",
+          "javascript",
         },
       },
       disabled = { -- disable formatting capabilities for the listed language servers

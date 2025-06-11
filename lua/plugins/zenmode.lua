@@ -42,6 +42,7 @@ return {
       vim.g.indent_blankline_enabled = false
       vim.g.miniindentscope_disable_old = vim.g.miniindentscope_disable
       vim.g.miniindentscope_disable = true
+      vim.lsp.inlay_hint.enable(false)
 
       vim.g.winbar_old = vim.o.winbar
       vim.api.nvim_create_autocmd({ "BufWinEnter", "BufNew" }, {
